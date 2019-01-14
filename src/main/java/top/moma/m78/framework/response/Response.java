@@ -25,7 +25,7 @@ public class Response<T> implements java.io.Serializable {
         .build();
   }
 
-  public static Response fail(Exception exception, ResponseStatusInfo responseStatusInfo) {
+  public static Response<?> fail(Exception exception, ResponseStatusInfo responseStatusInfo) {
     return FailedResponse.buildFailedResponse(null, exception, responseStatusInfo);
   }
 }

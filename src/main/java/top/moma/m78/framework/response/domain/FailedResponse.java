@@ -35,7 +35,7 @@ import top.moma.m78.framework.response.Response;
 @ToString
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class FailedResponse extends Response implements java.io.Serializable {
+public class FailedResponse extends Response<Object> implements java.io.Serializable {
 
   private static final long serialVersionUID = -5563634937142514154L;
 

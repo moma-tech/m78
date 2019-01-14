@@ -26,7 +26,8 @@ public class ContextHelper {
     return null;
   }
 
-  public static <T> T getBean(String beanName) {
+  @SuppressWarnings("unchecked")
+public static <T> T getBean(String beanName) {
     if (APPLICATION_CONTEXT.containsBean(beanName)) {
       Class<T> beanType = (Class<T>) APPLICATION_CONTEXT.getType(beanName);
       if (Objects.nonNull(beanType)) {

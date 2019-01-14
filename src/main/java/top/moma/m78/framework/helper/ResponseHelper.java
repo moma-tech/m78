@@ -57,7 +57,7 @@ public class ResponseHelper {
       Exception exception) {
     response(
         request,
-        new ResponseWrapper(response, responseStatusInfo),
+        new ResponseWrapper(response),
         FailedResponse.buildFailedResponse(request, exception, responseStatusInfo));
   }
 

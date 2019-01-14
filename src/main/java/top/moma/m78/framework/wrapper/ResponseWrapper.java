@@ -1,14 +1,17 @@
 package top.moma.m78.framework.wrapper;
 
-import com.google.common.base.Throwables;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.util.MimeTypeUtils;
-import top.moma.m78.framework.common.model.pojo.ResponseStatusInfo;
+
+import com.google.common.base.Throwables;
+
+import lombok.extern.slf4j.Slf4j;
 import top.moma.m78.framework.helper.json.JacksonHelper;
 
 /**
@@ -21,13 +24,8 @@ import top.moma.m78.framework.helper.json.JacksonHelper;
  */
 @Slf4j
 public class ResponseWrapper extends HttpServletResponseWrapper {
-  private ResponseStatusInfo responseStatusInfo;
 
-  public ResponseWrapper(HttpServletResponse response) {
-    super(response);
-  }
-
-  public ResponseWrapper(HttpServletResponse response, ResponseStatusInfo responseStatusInfo) {
+  public ResponseWrapper(HttpServletResponse response) {    
     super(response);
   }
 

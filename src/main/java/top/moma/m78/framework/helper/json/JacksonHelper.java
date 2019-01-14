@@ -99,7 +99,8 @@ public class JacksonHelper {
     return t;
   }
 
-  public static <T> T readValue(String json, TypeReference valueTypeRef) {
+  @SuppressWarnings("rawtypes")
+public static <T> T readValue(String json, TypeReference valueTypeRef) {
     T t = null;
     try {
       t = getObjectMapper().readValue(json, valueTypeRef);

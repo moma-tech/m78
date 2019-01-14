@@ -27,6 +27,7 @@ import top.moma.m78.framework.helper.json.JacksonHelper;
 @Slf4j
 public class RequestHelper {
 
+  @SuppressWarnings("rawtypes")
   public static String getToken(HttpServletRequest httpRequest) {
     String token = (String) httpRequest.getAttribute(ApiConstants.ACCESS_TOKEN);
     if (StringUtils.isBlank(token)) {
@@ -39,7 +40,6 @@ public class RequestHelper {
     if (StringUtils.isBlank(token)) {
       Optional<Map> bodyMap =
           Optional.ofNullable(JacksonHelper.readValue(getRequestBody(httpRequest), HashMap.class));
-
       token =
           TypeHelper.castToString(bodyMap.map(t -> t.get(ApiConstants.ACCESS_TOKEN)).orElse(null));
     }
