@@ -21,4 +21,9 @@ public interface HttpConstants {
   String PROXY_CLIENT_IP = "Proxy-Client-IP";
   /** Proxy Header Char */
   String WL_PROXY_CLIENT_IP = "WL-Proxy-Client-IP";
+
+  /** Http Connection Timeout * */
+  Integer CONNECTION_TIMEOUT = 30;
+  /** Http Read Timeout * */
+  Integer READ_TIMEOUT = 30;
 }

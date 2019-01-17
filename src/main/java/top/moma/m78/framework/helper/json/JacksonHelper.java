@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -18,7 +17,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +32,8 @@ import top.moma.m78.framework.customizer.exception.exceptions.M78Exception;
  * JacksonHelper
  *
  * <p>Jackson Helper
+ *
+ * <p>Strong: Model Property need in Camel Case
  *
  * @author ivan
  * @version 1.0 Created by ivan on 12/13/18 - 4:52 PM.
@@ -51,7 +54,6 @@ public class JacksonHelper {
   }
 
   static ObjectMapper createObjectMapper(ObjectMapper objectMapper) {
-    objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     // Set Feature
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -100,7 +102,7 @@ public class JacksonHelper {
   }
 
   @SuppressWarnings("rawtypes")
-public static <T> T readValue(String json, TypeReference valueTypeRef) {
+  public static <T> T readValue(String json, TypeReference valueTypeRef) {
     T t = null;
     try {
       t = getObjectMapper().readValue(json, valueTypeRef);
@@ -152,6 +154,18 @@ public static <T> T readValue(String json, TypeReference valueTypeRef) {
    */
   public static String toCamelJson(Object object) {
     Gson gson = new Gson();
+    if (Objects.nonNull(object)) {
+      return gson.toJson(object);
+    } else {
+      return new String();
+    }
+  }
+
+  public static String toSnakeJson(Object object) {
+    Gson gson =
+        new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create();
     if (Objects.nonNull(object)) {
       return gson.toJson(object);
     } else {

@@ -1,6 +1,7 @@
 package top.moma.m78.framework.helper;
 
 import java.util.Objects;
+import top.moma.m78.framework.customizer.exception.exceptions.M78Exception;
 
 /**
  * TypeHelper
@@ -17,5 +18,12 @@ public class TypeHelper {
     } else {
       return object.toString();
     }
+  }
+
+  public static <T> T notNull(final T object, final String message) {
+    if (object == null) {
+      throw new M78Exception("Argument Can not be null. " + message);
+    }
+    return object;
   }
 }

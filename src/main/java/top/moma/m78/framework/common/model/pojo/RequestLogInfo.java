@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import top.moma.m78.framework.helper.json.JacksonHelper;
 
 /**
  * RequestLogInfo
@@ -61,5 +62,12 @@ public class RequestLogInfo {
     this.runTime = runTime;
     this.ip = ip;
     this.appid = appid;
+  }
+
+  public static void main(String[] args) {
+    RequestLogInfo r = RequestLogInfo.builder().requestId("123").build();
+    System.out.println(JacksonHelper.toJson(r));
+    System.out.println(JacksonHelper.toCamelJson(r));
+    System.out.println(JacksonHelper.toSnakeJson(r));
   }
 }
