@@ -1,17 +1,11 @@
 package top.moma.m78.framework.helper.resttemplate;
 
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +20,12 @@ import top.moma.m78.framework.helper.resttemplate.dto.PostEntity;
 import top.moma.m78.framework.helper.resttemplate.handler.CustomErrorHandler;
 import top.moma.m78.framework.helper.resttemplate.handler.CustomLogHandler;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * RestTemplateHelper
  *
@@ -37,11 +37,11 @@ import top.moma.m78.framework.helper.resttemplate.handler.CustomLogHandler;
 @Slf4j
 public class RestTemplateHelper {
 
-  public static String doGet(final GetEntity getEntity) {
+  public static String doGet(GetEntity getEntity) {
     return doGet(getEntity, String.class);
   }
 
-  public static <T> T doGet(final GetEntity getEntity, final Class<T> responseType) {
+  public static <T> T doGet(GetEntity getEntity, Class<T> responseType) {
     TypeHelper.notNull(getEntity.getUrl(), "GET URL");
     TypeHelper.notNull(responseType, "Response Type");
     RestTemplate restTemplate =
@@ -51,6 +51,8 @@ public class RestTemplateHelper {
             .setConnectTimeout(Duration.ofSeconds(HttpConstants.CONNECTION_TIMEOUT))
             .setReadTimeout(Duration.ofSeconds(HttpConstants.READ_TIMEOUT))
             .build();
+    restTemplate.setRequestFactory(
+        new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
     HttpHeaders httpHeaders = formHeader(getEntity.getHeaderMap(), false);
     String getUrl =
         expandUrl(
@@ -68,11 +70,11 @@ public class RestTemplateHelper {
         getEntity.getJsonNamingStrategyEnum());
   }
 
-  public static String doPost(final PostEntity postEntity) {
+  public static String doPost(PostEntity postEntity) {
     return doPost(postEntity, String.class);
   }
 
-  public static <T> T doPost(final PostEntity postEntity, final Class<T> responseType) {
+  public static <T> T doPost(PostEntity postEntity, Class<T> responseType) {
     TypeHelper.notNull(postEntity.getUrl(), "POST URL");
     TypeHelper.notNull(responseType, "Response Type");
     RestTemplate restTemplate =
@@ -82,6 +84,8 @@ public class RestTemplateHelper {
             .setConnectTimeout(Duration.ofSeconds(HttpConstants.CONNECTION_TIMEOUT))
             .setReadTimeout(Duration.ofSeconds(HttpConstants.READ_TIMEOUT))
             .build();
+    restTemplate.setRequestFactory(
+        new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
     HttpHeaders httpHeaders = formHeader(postEntity.getHeaderMap(), postEntity.getFormBody());
     if (postEntity.getFormBody()) {
       HttpEntity<LinkedMultiValueMap<String, String>> formEntity =
@@ -112,6 +116,8 @@ public class RestTemplateHelper {
             .setConnectTimeout(Duration.ofSeconds(HttpConstants.CONNECTION_TIMEOUT))
             .setReadTimeout(Duration.ofSeconds(HttpConstants.READ_TIMEOUT))
             .build();
+    restTemplate.setRequestFactory(
+        new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
     if (formBody) {
       HttpEntity<LinkedMultiValueMap<String, String>> formEntity =
           buildFormEntity(requestObject, httpHeaders, jsonNameEnum);
@@ -167,11 +173,15 @@ public class RestTemplateHelper {
     if (Objects.nonNull(requestObject)) {
       if (JsonNamingStrategyEnum.LOWER_CAMEL_CASE.equals(jsonNameEnum)) {
         Map<String, String> requestMap =
-            JacksonHelper.readValue(JacksonHelper.toCamelJson(requestObject), Map.class);
+            JacksonHelper.readValue(
+                JacksonHelper.toCamelJson(requestObject),
+                new TypeReference<Map<String, String>>() {});
         requestParams.setAll(requestMap);
       } else if (JsonNamingStrategyEnum.SNAKE_CASE.equals(jsonNameEnum)) {
         Map<String, String> requestMap =
-            JacksonHelper.readValue(JacksonHelper.toSnakeJson(requestObject), Map.class);
+            JacksonHelper.readValue(
+                JacksonHelper.toSnakeJson(requestObject),
+                new TypeReference<Map<String, String>>() {});
         requestParams.setAll(requestMap);
       } else {
         Map<String, String> requestMap = BeanHelper.beanToStringMap(requestObject);
@@ -188,11 +198,15 @@ public class RestTemplateHelper {
     if (Objects.nonNull(requestObject)) {
       if (JsonNamingStrategyEnum.LOWER_CAMEL_CASE.equals(jsonNameEnum)) {
         Map<String, String> urlParameters =
-            JacksonHelper.readValue(JacksonHelper.toCamelJson(requestObject), Map.class);
+            JacksonHelper.readValue(
+                JacksonHelper.toCamelJson(requestObject),
+                new TypeReference<Map<String, String>>() {});
         params.setAll(urlParameters);
       } else if (JsonNamingStrategyEnum.SNAKE_CASE.equals(jsonNameEnum)) {
         Map<String, String> urlParameters =
-            JacksonHelper.readValue(JacksonHelper.toSnakeJson(requestObject), Map.class);
+            JacksonHelper.readValue(
+                JacksonHelper.toSnakeJson(requestObject),
+                new TypeReference<Map<String, String>>() {});
         params.setAll(urlParameters);
       } else {
         Map<String, String> urlParameters = BeanHelper.beanToStringMap(requestObject);

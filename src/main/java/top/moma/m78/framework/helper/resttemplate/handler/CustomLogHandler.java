@@ -27,7 +27,6 @@ import top.moma.m78.framework.constants.ApiConstants;
 @Slf4j
 public class CustomLogHandler implements ClientHttpRequestInterceptor {
   private static final Charset DEFAULT_CHARSET = UTF_8;
-
   /**
    * @param request :
    * @param body :
@@ -37,16 +36,14 @@ public class CustomLogHandler implements ClientHttpRequestInterceptor {
    */
   private static long logRequest(HttpRequest request, byte[] body, Charset charset) {
     long startTime = System.currentTimeMillis();
-    log.debug(
-        "===========================request begin================================================");
+    log.debug("===========================request begin=========================================");
     log.debug("REF.ID      : {}", MDC.get(ApiConstants.REQUEST_ID));
     log.debug("URI         : {}", request.getURI());
     log.debug("Method      : {}", request.getMethod());
     log.debug("Headers     : {}", request.getHeaders());
     log.debug("Request body: {}", new String(body, charset));
     log.debug("Start Time  : {}", startTime);
-    log.debug(
-        "===========================request end================================================");
+    log.debug("===========================request end===========================================");
     return startTime;
   }
 
@@ -57,11 +54,10 @@ public class CustomLogHandler implements ClientHttpRequestInterceptor {
    *     <p>// logResponse
    */
   private static void logResponse(ClientHttpResponse response, Charset charset, long startTime)
-      throws IOException {
+          throws IOException {
     long finishTime = System.currentTimeMillis();
     long costTime = finishTime - startTime;
-    log.debug(
-        "===========================response begin==========================================");
+    log.debug("===========================response begin========================================");
     log.debug("REF.ID       : {}", MDC.get(ApiConstants.REQUEST_ID));
     log.debug("Status code  : {}", response.getStatusCode());
     log.debug("Status text  : {}", response.getStatusText());
@@ -69,8 +65,7 @@ public class CustomLogHandler implements ClientHttpRequestInterceptor {
     log.debug("Response body: {}", new String(copyToByteArray(response.getBody()), charset));
     log.debug("Finish Time  : {}", finishTime);
     log.debug("Cost Time    : {}", costTime);
-    log.debug(
-        "===========================response end=================================================");
+    log.debug("===========================response end==========================================");
   }
 
   /**
@@ -83,8 +78,8 @@ public class CustomLogHandler implements ClientHttpRequestInterceptor {
    */
   @Override
   public ClientHttpResponse intercept(
-      HttpRequest httpRequest, byte[] body, ClientHttpRequestExecution clientHttpRequestExecution)
-      throws IOException {
+          HttpRequest httpRequest, byte[] body, ClientHttpRequestExecution clientHttpRequestExecution)
+          throws IOException {
     long startTime = logRequest(httpRequest, body, getCharset(httpRequest));
     ClientHttpResponse httpResponse = clientHttpRequestExecution.execute(httpRequest, body);
     logResponse(httpResponse, getCharset(httpRequest), startTime);
@@ -99,7 +94,7 @@ public class CustomLogHandler implements ClientHttpRequestInterceptor {
    */
   private Charset getCharset(HttpMessage message) {
     return Optional.ofNullable(message.getHeaders().getContentType())
-        .map(MediaType::getCharset)
-        .orElse(DEFAULT_CHARSET);
+            .map(MediaType::getCharset)
+            .orElse(DEFAULT_CHARSET);
   }
 }
